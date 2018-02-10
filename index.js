@@ -71,7 +71,7 @@ class Options {
             if (path.isAbsolute(file)) {
                 data = read(file);
             } else {
-                ([appPath.toString()].concat(xdg.dataDirs)).forEach(root => {
+                ([appPath.toString()].concat(xdg.configDirs)).forEach(root => {
                     if (!data) {
                         data = read(path.join(root, file));
                     }
