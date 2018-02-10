@@ -72,6 +72,9 @@ class Options {
                 data = read(file);
             } else {
                 ([appPath.toString()].concat(xdg.configDirs)).forEach(root => {
+                    // in case we appended with undefined
+                    if (!root)
+                        return;
                     if (!data) {
                         data = read(path.join(root, file));
                     }
