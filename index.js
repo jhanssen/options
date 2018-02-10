@@ -2,7 +2,8 @@
 
 const fs = require("fs");
 const path = require("path");
-const homedir = require("homedir");
+const appPath = require("app-root-path");
+const xdg = require('xdg-basedir');
 
 function split(data)
 {
@@ -70,7 +71,7 @@ class Options {
             if (path.isAbsolute(file)) {
                 data = read(file);
             } else {
-                [require("app-root-path").toString(), path.join(homedir(), ".config"), `/etc`].forEach(root => {
+                ([appPath.toString()].concat(xdg.dataDirs)).forEach(root => {
                     if (!data) {
                         data = read(path.join(root, file));
                     }
