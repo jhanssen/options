@@ -1,0 +1,29 @@
+{
+  "name": "@jhanssen/options",
+  "version": "1.0.0",
+  "description": "Options parser that looks at argv, environment variables and a config file.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jhanssen/options.git"
+  },
+  "keywords": [
+    "options",
+    "parser",
+    "argv",
+    "environment"
+  ],
+  "author": "Jan E Hanssen",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jhanssen/options/issues"
+  },
+  "homepage": "https://github.com/jhanssen/options#readme",
+  "dependencies": {
+    "app-root-path": "^2.0.1",
+    "minimist": "^1.2.0"
+  }
+}
