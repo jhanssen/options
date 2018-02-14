@@ -112,8 +112,8 @@ module.exports = function(prefix, argv) {
         argv = require("minimist")(process.argv.slice(2));
 
     data.options = new Options(prefix, argv);
-    let ret = function(name) {
-        return data.options.value(name);
+    let ret = function(name, defaultValue) {
+        return data.options.value(name) || defaultValue;
     };
     ret.int = function(name, defaultValue) {
         const v = parseInt(data.options.value(name));
