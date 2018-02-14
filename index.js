@@ -58,7 +58,7 @@ class Options {
         // if we have a config file passed, read it
         let file = this.value("config-file");
         if (!file && prefix.length > 0)
-            file = this.prefix + ".conf";
+            file = prefix + ".conf";
         if (file) {
             const read = file => {
                 let data;
