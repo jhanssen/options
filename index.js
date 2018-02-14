@@ -56,8 +56,10 @@ class Options {
 
     _readFile(prefix) {
         // if we have a config file passed, read it
-        const file = this.value("config-file") || prefix;
-        if (typeof file === "string" && file.length > 0) {
+        let file = this.value("config-file");
+        if (!file && prefix.length > 0)
+            file = this.prefix + ".conf";
+        if (file) {
             const read = file => {
                 let data;
                 try {
@@ -75,12 +77,8 @@ class Options {
                     // in case we appended with undefined
                     if (!root)
                         return;
-                    if (!data) {
-                        data = read(path.join(root, file));
-                    }
-                    if (!data) {
+                    if (!data)
                         data = read(path.join(root, file) + ".conf");
-                    }
                 });
             }
             if (typeof data === "string") {
