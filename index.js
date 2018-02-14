@@ -36,6 +36,22 @@ function split(data)
     return out;
 }
 
+function realValue(v)
+{
+    if (typeof v !== "string")
+        return v;
+    const vf = parseFloat(v);
+    if (!isNaN(vf))
+        return vf;
+    switch (v) {
+    case "true":
+        return true;
+    case "false":
+        return false;
+    }
+    return v;
+}
+
 class Options {
     constructor(prefix, argv) {
         this.prefix = prefix ? (prefix + "-") : "";
@@ -50,7 +66,7 @@ class Options {
             return this.argv[name];
         const envname = (this.prefix + name).replace(/-/g, "_").toUpperCase();
         if (envname in process.env)
-            return process.env[envname];
+            return realValue(process.env[envname]);
         return undefined;
     }
 
@@ -113,7 +129,10 @@ module.exports = function(prefix, argv) {
 
     data.options = new Options(prefix, argv);
     let ret = function(name, defaultValue) {
-        return data.options.value(name) || defaultValue;
+        const val = data.options.value(name);
+        if (typeof val === "undefined")
+            return defaultValue;
+        return val;
     };
     ret.int = function(name, defaultValue) {
         const v = parseInt(data.options.value(name));
