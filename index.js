@@ -73,7 +73,7 @@ class Options {
     _readFile(prefix) {
         // if we have a config file passed, read it
         let file = this.value("config-file");
-        if (!file && prefix.length > 0)
+        if (!file && prefix)
             file = prefix + ".conf";
         if (file) {
             const read = file => {
@@ -94,7 +94,7 @@ class Options {
                     if (!root)
                         return;
                     if (!data)
-                        data = read(path.join(root, file) + ".conf");
+                        data = read(path.join(root, file)) || read(path.join(root, file) + ".conf");
                 });
             }
             if (typeof data === "string") {
