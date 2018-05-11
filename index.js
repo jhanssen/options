@@ -134,6 +134,7 @@ module.exports = function(prefix, argv) {
             return defaultValue;
         return val;
     };
+    ret.prefix = prefix;
     ret.int = function(name, defaultValue) {
         const v = parseInt(data.options.value(name));
         if (typeof v === "number" && !isNaN(v))
