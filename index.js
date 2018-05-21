@@ -99,21 +99,28 @@ class Options {
             }
             if (typeof data === "string") {
                 // entries of key=value
-                const items = split(data);
-                for (let i = 0; i < items.length; ++i) {
-                    const item = items[i].trim();
-                    if (!item.length)
-                        continue;
-                    if (item[0] === "#")
-                        continue;
-                    const eq = item.indexOf("=");
-                    if (eq === -1)
-                        continue;
-                    const key = item.substr(0, eq).trim();
-                    if (!key.length)
-                        continue;
-                    if (!(key in this.argv)) {
-                        this.argv[key] = item.substr(eq + 1).trim();
+                try {
+                    let obj = JSON.parse(data);
+                    for (let key in obj) {
+                        this.argv[key] = obj[key];
+                    }
+                } catch (err) {
+                    const items = split(data);
+                    for (let i = 0; i < items.length; ++i) {
+                        const item = items[i].trim();
+                        if (!item.length)
+                            continue;
+                        if (item[0] === "#")
+                            continue;
+                        const eq = item.indexOf("=");
+                        if (eq === -1)
+                            continue;
+                        const key = item.substr(0, eq).trim();
+                        if (!key.length)
+                            continue;
+                        if (!(key in this.argv)) {
+                            this.argv[key] = item.substr(eq + 1).trim();
+                        }
                     }
                 }
             }
