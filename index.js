@@ -55,7 +55,7 @@ function realValue(v)
 class Options {
     constructor(prefix, argv) {
         this.prefix = prefix ? (prefix + "-") : "";
-        this.argv = argv;
+        this.argv = Object.assign({}, argv);
 
         this._readFile(prefix);
     }
