@@ -85,27 +85,28 @@ class Options {
                 return data;
             };
 
-            let data;
+            let data = [];
             if (path.isAbsolute(file)) {
-                data = read(file);
+                data.push(read(file));
             } else {
                 ([appPath.toString()].concat(xdg.configDirs)).forEach(root => {
                     // in case we appended with undefined
                     if (!root)
                         return;
-                    if (!data)
-                        data = read(path.join(root, file)) || read(path.join(root, file) + ".conf");
+                    data.push(read(path.join(root, file)) || read(path.join(root, file) + ".conf"));
                 });
             }
-            if (typeof data === "string") {
-                // entries of key=value
+            for (let i = data.length - 1; i >= 0; --i) {
+                let str = data[i];
+                if (!str)
+                    continue;
                 try {
-                    let obj = JSON.parse(data);
+                    let obj = JSON.parse(str);
                     for (let key in obj) {
                         this.argv[key] = obj[key];
                     }
                 } catch (err) {
-                    const items = split(data);
+                    const items = split(str);
                     for (let i = 0; i < items.length; ++i) {
                         const item = items[i].trim();
                         if (!item.length)
