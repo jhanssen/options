@@ -70,6 +70,14 @@ class Options {
         return undefined;
     }
 
+    _homedir() {
+        let home = process.env.home;
+        if (home) {
+            return path.join(home, ".config");
+        }
+        return undefined;
+    }
+
     _readFile(prefix) {
         // if we have a config file passed, read it
         let file = this.value("config-file");
@@ -89,10 +97,14 @@ class Options {
             if (path.isAbsolute(file)) {
                 data.push(read(file));
             } else {
-                ([appPath.toString()].concat(xdg.configDirs)).forEach(root => {
+                let seen = new Set();
+                ([appPath.toString(), this._homedir()].concat(xdg.configDirs)).forEach(root => {
                     // in case we appended with undefined
                     if (!root)
                         return;
+                    if (seen.has(root))
+                        return;
+                    seen.add(root);
                     data.push(read(path.join(root, file)) || read(path.join(root, file) + ".conf"));
                 });
             }
