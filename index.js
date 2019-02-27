@@ -58,6 +58,7 @@ class Options {
         this.argv = Object.assign({}, argv);
         this.additionalFiles = options.additionalFiles || [];
         this.applicationPath = options.noApplicationPath ? "" : appPath.toString();
+        this.debug = options.debug;
         this._read();
     }
 
@@ -79,6 +80,11 @@ class Options {
         return undefined;
     }
 
+    _log(...args) {
+        if (this.debug)
+            console.log(...args);
+    }
+
     _read() {
         // if we have a config file passed, read it
         let file = this.value("config-file");
@@ -89,11 +95,14 @@ class Options {
             const read = file => {
                 try {
                     const contents = fs.readFileSync(file, "utf8");
+                    this._log(`Loaded ${contents.length} bytes from ${file}`);
+
                     if (contents) {
-                        data.push(contents);
+                        data.push({ file: file, contents: contents });
                         return true;
                     }
                 } catch (e) {
+                    this._log(`Failed to load ${file}`);
                 }
                 return false;
             };
@@ -102,6 +111,7 @@ class Options {
                 read(file);
             } else {
                 let seen = new Set();
+                this.additionalFiles.forEach(read);
                 ([this.applicationPath, this._homedir()].concat(xdg.configDirs)).forEach(root => {
                     // in case we appended with undefined
                     if (!root)
@@ -113,15 +123,15 @@ class Options {
                     if (!read(filePath))
                         read(filePath + ".conf");
                 });
-                this.additionalFiles.forEach(read);
             }
             for (let i = data.length - 1; i >= 0; --i) {
-                let str = data[i];
+                let str = data[i].contents;
                 if (!str)
                     continue;
                 try {
                     let obj = JSON.parse(str);
                     for (let key in obj) {
+                        this._log(`Assigning ${obj[key]} over ${this.argv[key]} for ${key} from ${data[i].file} (JSON)`);
                         this.argv[key] = obj[key];
                     }
                 } catch (err) {
@@ -133,14 +143,18 @@ class Options {
                         if (item[0] === "#")
                             continue;
                         const eq = item.indexOf("=");
-                        if (eq === -1)
+                        if (eq === -1) {
+                            this._log("Couldn't find =", item);
                             continue;
-                        const key = item.substr(0, eq).trim();
-                        if (!key.length)
-                            continue;
-                        if (!(key in this.argv)) {
-                            this.argv[key] = item.substr(eq + 1).trim();
                         }
+                        const key = item.substr(0, eq).trim();
+                        if (!key.length) {
+                            this._log("empty key", item);
+                            continue;
+                        }
+                        const value = item.substr(eq + 1).trim();
+                        this._log(`Assigning ${value} over ${this.argv[key]} for ${key} from ${data[i].file} (INI)`);
+                        this.argv[key] = value;
                     }
                 }
             }
