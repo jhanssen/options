@@ -53,18 +53,19 @@ function realValue(v)
 }
 
 class Options {
-    constructor(prefix, argv) {
-        this.prefix = prefix ? (prefix + "-") : "";
+    constructor(options, argv) {
+        this.prefix = options.prefix;
         this.argv = Object.assign({}, argv);
-
-        this._readFile(prefix);
+        this.additionalFiles = options.additionalFiles || [];
+        this.applicationPath = options.noApplicationPath ? "" : appPath.toString();
+        this._read();
     }
 
     value(name) {
         // foo-bar becomes FOO_BAR as env
         if (name in this.argv)
             return this.argv[name];
-        const envname = (this.prefix + name).replace(/-/g, "_").toUpperCase();
+        const envname = (this.prefix + "_" + name).replace(/-/g, "_").toUpperCase();
         if (envname in process.env)
             return realValue(process.env[envname]);
         return undefined;
@@ -78,35 +79,42 @@ class Options {
         return undefined;
     }
 
-    _readFile(prefix) {
+    _read() {
         // if we have a config file passed, read it
         let file = this.value("config-file");
-        if (!file && prefix)
-            file = prefix + ".conf";
+        if (!file && this.prefix)
+            file = this.prefix + ".conf";
         if (file) {
+            let data = [];
             const read = file => {
-                let data;
+                console.log(file);
                 try {
-                    data = fs.readFileSync(file, "utf8");
+                    const contents = fs.readFileSync(file, "utf8");
+                    if (contents) {
+                        data.push(contents);
+                        return true;
+                    }
                 } catch (e) {
                 }
-                return data;
+                return false;
             };
 
-            let data = [];
             if (path.isAbsolute(file)) {
-                data.push(read(file));
+                read(file);
             } else {
                 let seen = new Set();
-                ([appPath.toString(), this._homedir()].concat(xdg.configDirs)).forEach(root => {
+                ([this.applicationPath, this._homedir()].concat(xdg.configDirs)).forEach(root => {
                     // in case we appended with undefined
                     if (!root)
                         return;
                     if (seen.has(root))
                         return;
                     seen.add(root);
-                    data.push(read(path.join(root, file)) || read(path.join(root, file) + ".conf"));
+                    let filePath = path.join(root, file);
+                    if (!read(filePath))
+                        read(filePath + ".conf");
                 });
+                this.additionalFiles.forEach(read);
             }
             for (let i = data.length - 1; i >= 0; --i) {
                 let str = data[i];
@@ -143,18 +151,20 @@ class Options {
 
 const data = {};
 
-module.exports = function(prefix, argv) {
+module.exports = function(options, argv) {
     if (!argv)
         argv = require("minimist")(process.argv.slice(2));
+    if (!(options instanceof Object))
+        options = { prefix: options || "" };
 
-    data.options = new Options(prefix, argv);
+    data.options = new Options(options, argv);
     let ret = function(name, defaultValue) {
         const val = data.options.value(name);
         if (typeof val === "undefined")
             return defaultValue;
         return val;
     };
-    ret.prefix = prefix;
+    ret.prefix = options.prefix;
     ret.int = function(name, defaultValue) {
         const v = parseInt(data.options.value(name));
         if (typeof v === "number" && !isNaN(v))
