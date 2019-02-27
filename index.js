@@ -87,7 +87,6 @@ class Options {
         if (file) {
             let data = [];
             const read = file => {
-                console.log(file);
                 try {
                     const contents = fs.readFileSync(file, "utf8");
                     if (contents) {
