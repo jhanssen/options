@@ -54,11 +54,12 @@ function realValue(v)
 
 class Options {
     constructor(options, argv) {
-        this.prefix = options.prefix;
         this.argv = Object.assign({}, argv);
+        this.prefix = options.prefix;
         this.additionalFiles = options.additionalFiles || [];
         this.applicationPath = options.noApplicationPath ? "" : appPath.toString();
         this.debug = options.debug;
+        this.options = {};
         this._read();
     }
 
@@ -69,6 +70,9 @@ class Options {
         const envname = (this.prefix + "_" + name).replace(/-/g, "_").toUpperCase();
         if (envname in process.env)
             return realValue(process.env[envname]);
+
+        if (name in this.options)
+            return realValue(this.options[name]);
         return undefined;
     }
 
@@ -131,8 +135,8 @@ class Options {
                 try {
                     let obj = JSON.parse(str);
                     for (let key in obj) {
-                        this._log(`Assigning ${obj[key]} over ${this.argv[key]} for ${key} from ${data[i].file} (JSON)`);
-                        this.argv[key] = obj[key];
+                        this._log(`Assigning ${obj[key]} over ${this.options[key]} for ${key} from ${data[i].file} (JSON)`);
+                        this.options[key] = obj[key];
                     }
                 } catch (err) {
                     const items = split(str);
@@ -153,8 +157,8 @@ class Options {
                             continue;
                         }
                         const value = item.substr(eq + 1).trim();
-                        this._log(`Assigning ${value} over ${this.argv[key]} for ${key} from ${data[i].file} (INI)`);
-                        this.argv[key] = value;
+                        this._log(`Assigning ${value} over ${this.options[key]} for ${key} from ${data[i].file} (INI)`);
+                        this.options[key] = value;
                     }
                 }
             }
