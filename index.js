@@ -74,7 +74,7 @@ class Options {
             return realValue(process.env[envname]);
 
         if (name in this.options)
-            return realValue(this.options[name]);
+            return this.options[name];
         return undefined;
     }
 
