@@ -40,9 +40,11 @@ function realValue(v)
 {
     if (typeof v !== "string")
         return v;
-    const vf = parseFloat(v);
-    if (!isNaN(vf))
-        return vf;
+    if (/^[-0-9.]+$/.exec(v)) {
+        const vf = parseFloat(v);
+        if (!isNaN(vf))
+            return vf;
+    }
     switch (v) {
     case "true":
         return true;
