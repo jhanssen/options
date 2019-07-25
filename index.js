@@ -198,8 +198,10 @@ module.exports = function(options, argv) {
     };
     ret.json = function(name, defaultValue) {
         const opt = data.options.value(name);
-        if (!opt)
+        if (opt === undefined)
             return defaultValue;
+        if (typeof opt !== "string")
+            return opt;
         try {
             const json = JSON.parse(opt);
             return json;
