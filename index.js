@@ -155,7 +155,7 @@ class Options {
             try {
                 let obj = JSON.parse(str);
                 for (let key in obj) {
-                    this._log(`Assigning ${obj[key]} over ${this.options[key]} for ${key} from ${data[i].file} (JSON)`);
+                    this._log(`Assigning ${JSON.stringify(obj[key])} over ${JSON.stringify(this.options[key])} for ${key} from ${data[i].file} (JSON)`);
                     this.options[key] = obj[key];
                 }
             } catch (err) {
