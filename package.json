@@ -24,7 +24,7 @@
   "homepage": "https://github.com/jhanssen/options#readme",
   "dependencies": {
     "app-root-path": "^2.1.0",
-    "minimist": "^1.2.0",
+    "minimist": "^1.2.5",
     "xdg-basedir": "^3.0.0"
   }
 }
