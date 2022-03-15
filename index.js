@@ -160,8 +160,8 @@ class Options {
                 }
             } catch (err) {
                 const items = split(str);
-                for (let i = 0; i < items.length; ++i) {
-                    const item = items[i].trim();
+                for (let j = 0; j < items.length; ++j) {
+                    const item = items[j].trim();
                     if (!item.length)
                         continue;
                     if (item[0] === "#")
