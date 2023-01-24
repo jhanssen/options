@@ -16,4 +16,6 @@ declare namespace options {
 
 declare function options(key: string, defaultValue?: Option) : Option;
 
-export default function (opts: Options | string, args?: string[]) : typeof options;
+export type OptionsFunction = typeof options;
+
+export default function (opts: Options | string, args?: string[]) : OptionsFunction;
