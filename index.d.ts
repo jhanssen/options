@@ -6,7 +6,7 @@ declare interface Options {
     configDirs?: string[];
 }
 
-declare type Option = {[key: string]: Option} | number | string | boolean;
+export type Option = {[key: string]: Option} | number | string | boolean;
 
 declare namespace options {
     export function int(key: string, defaultValue?: number) : number;
