@@ -12,6 +12,7 @@ declare namespace options {
     export function int(key: string, defaultValue?: number) : number;
     export function float(key: string, defaultValue?: number) : number;
     export function json(key: string, defaultValue?: any) : any;
+    const prefix: string | undefined;
 }
 
 declare function options(key: string, defaultValue?: Option) : Option;
