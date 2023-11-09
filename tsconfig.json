@@ -1,6 +1,6 @@
 {
     "compilerOptions": {
-        "target": "es2022",
+        "target": "es6",
         "newLine": "LF",
         "module": "es6",
         "moduleResolution": "node",
