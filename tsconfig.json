@@ -14,7 +14,7 @@
         "strict": true,
         "sourceMap": true,
         "incremental": true,
-        "lib": ["es2022"],
+        "lib": ["es6"],
         "outDir": "./dist"
     }
 }
