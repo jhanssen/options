@@ -1,1 +1,6 @@
 *.~undo-tree~
+/node_modules/
+/dist/index.d.ts
+/dist/index.js
+/dist/index.js.map
+/dist/tsconfig.tsbuildinfo
