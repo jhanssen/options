@@ -1,0 +1,3 @@
+src/*.ts
+dist/tsconfig.tsbuildinfo
+tsconfig.json
