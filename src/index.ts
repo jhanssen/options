@@ -221,13 +221,19 @@ class Engine {
 }
 
 export interface Options {
+    readonly prefix: string;
+
     (name: string): Value | undefined;
     (name: string, defaultValue: Value): Value;
+
     float(name: string): number | undefined;
     float(name: string, defaultValue: number): number;
+
     int(name: string): number | undefined;
     int(name: string, defaultValue: number): number;
+
     json(name: string, defaultValue?: unknown): unknown;
+
     string(name: string): string | undefined;
     string(name: string, defaultValue: string): string;
 }
@@ -241,12 +247,12 @@ export default function(optionsOptions: OptionsOptions | string, argv?: minimist
         optionsOptions = { prefix: optionsOptions || "" };
     }
 
-    const options = new Engine(optionsOptions, argv);
+    const engine = new Engine(optionsOptions, argv);
 
     function value(name: string): Value | undefined;
     function value(name: string, defaultValue: Value): Value;
     function value(name: string, defaultValue?: Value): Value | undefined {
-        const val = options.value(name);
+        const val = engine.value(name);
         if (val === undefined)
             return defaultValue;
         return val;
@@ -255,7 +261,7 @@ export default function(optionsOptions: OptionsOptions | string, argv?: minimist
     function float(name: string): number | undefined;
     function float(name: string, defaultValue: number): number;
     function float(name: string, defaultValue?: number): number | undefined {
-        const v = parseFloat(options.string(name) || "");
+        const v = parseFloat(engine.string(name) || "");
         if (typeof v === "number" && !isNaN(v))
             return v;
         return defaultValue;
@@ -264,14 +270,14 @@ export default function(optionsOptions: OptionsOptions | string, argv?: minimist
     function int(name: string): number | undefined;
     function int(name: string, defaultValue: number): number;
     function int(name: string, defaultValue?: number): number | undefined {
-        const v = parseInt(options.string(name) || "");
+        const v = parseInt(engine.string(name) || "");
         if (typeof v === "number" && !isNaN(v))
             return v;
         return defaultValue;
     }
 
     function json(name: string, defaultValue?: unknown): unknown {
-        const opt = options.value(name);
+        const opt = engine.value(name);
         if (opt === undefined)
             return defaultValue;
         if (typeof opt !== "string")
@@ -287,7 +293,7 @@ export default function(optionsOptions: OptionsOptions | string, argv?: minimist
     function string(name: string): string | undefined;
     function string(name: string, defaultValue: string): string;
     function string(name: string, defaultValue?: string): string | undefined {
-        return options.string(name) ?? defaultValue;
+        return engine.string(name) ?? defaultValue;
     }
 
     return Object.assign(value, {
