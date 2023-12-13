@@ -2,10 +2,10 @@
   "name": "@jhanssen/options",
   "version": "5.0.0",
   "description": "Options parser that looks at argv, environment variables and a config file.",
-  "main": "dist/index.js",
+  "main": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsc -p ./tsconfig.json"
+    "build": "rm -rf dist && tsc -p ./tsconfig.json && mv ./dist/index.js ./dist/index.mjs && tsc -p ./tsconfig.cjs.json && mv ./dist/index.js ./dist/index.mjs"
   },
   "repository": {
     "type": "git",
