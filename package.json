@@ -8,8 +8,9 @@
     "build": "rm -rf dist && tsc -p ./tsconfig.json"
   },
   "files": [
+    "README.md",
     "package.json",
-    "dist/main.js",
+    "dist/index.js",
     "dist/index.d.ts"
   ],
   "repository": {
